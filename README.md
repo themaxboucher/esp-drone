@@ -2,7 +2,7 @@
 
 **"Bumble Bee"** 🐝 is a palm-sized ESP32-based WiFi quadcopter built on the ESP-Fly platform and powered by the Espressif [`esp-drone`](https://github.com/espressif/esp-drone) firmware.
 
-It runs a real-time flight control loop with IMU feedback, PID stabilization, and WiFi-based control in a 25 g drone.
+![IMG_5006](https://github.com/user-attachments/assets/64b22a95-8172-48ec-a266-67a1b20c1d60)
 
 This project involved:
 
@@ -21,6 +21,7 @@ This project involved:
 - **LiPo battery (220 mAh)** — onboard power source
 - **3D printed frame** — supports motors and electronics
 
+![IMG_4997](https://github.com/user-attachments/assets/68ece96f-53ce-48f2-b10c-7a918c23d1ee)
 
 ## 💻 Firmware
 
@@ -129,3 +130,4 @@ This repository documents the hardware assembly, firmware configuration (macOS E
 This project inherits the GPL-3.0 license from the original `esp-drone` firmware.
 
 See the `LICENSE` file for details.
+
