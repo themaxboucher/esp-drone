@@ -1,48 +1,131 @@
+# ESP32 WiFi Micro Drone
 
-## ESP-Drone
+**"Bumble Bee"** 🐝 is a palm-sized ESP32-based WiFi quadcopter built on the ESP-Fly platform and powered by the Espressif [`esp-drone`](https://github.com/espressif/esp-drone) firmware.
 
-* [中文](./README_cn.md)
+It runs a real-time flight control loop with IMU feedback, PID stabilization, and WiFi-based control in a 25 g drone.
 
-### Introduction
+This project involved:
 
-**ESP-Drone** is an open source solution based on Espressif ESP32/ESP32-S2/ESP32-S3 Wi-Fi chip, which can be controlled by a mobile APP or gamepad over **Wi-Fi** connection. ESP-Drone comes with **simple hardware**, **clear and extensible code architecture**, and therefore this project can be used in **STEAM education** and other fields. The main code is ported from **Crazyflie** open source project with **GPL3.0** protocol.
+- 🔬 Assembling and soldering a complete micro quadcopter platform
+- 💻 Building and flashing firmware using ESP-IDF
+- 😩 Debugging hardware and firmware integration issues
+- 🎮 Configuring and validating WiFi flight control
 
-> Currently support ESP32、ESP32S2、ESP32S3, please using ESP-IDF [release/v4.4](https://docs.espressif.com/projects/esp-idf/en/release-v4.4/esp32s2/get-started/index.html) branch as your develop environment
+## 🔧 Hardware
 
-![ESP-Drone](./docs/_static/espdrone_s2_v1_2_2.png)
+**Core Components:**
 
-For more information, please check the sections below:
-* **Getting Started**: [Getting Started](https://docs.espressif.com/projects/espressif-esp-drone/zh_CN/latest/gettingstarted.html)
-* **Hardware Schematic**：[Hardware](https://docs.espressif.com/projects/espressif-esp-drone/zh_CN/latest/_static/ESP32_S2_Drone_V1_2/SCH_Mainboard_ESP32_S2_Drone_V1_2.pdf)
-* **iOS APP Source code**: [ESP-Drone-iOS](https://github.com/EspressifApps/ESP-Drone-iOS)
-* **Android APP Source code**: [ESP-Drone-Android](https://github.com/EspressifApps/ESP-Drone-Android)
+- **Seeed Studio XIAO ESP32-S3** — main flight controller (WiFi + processing)
+- **Custom PCB** — integrates the MPU6050 IMU and MOSFET motor drivers
+- **4x brushed coreless motors** — driven directly from the onboard MOSFETs
+- **LiPo battery (220 mAh)** — onboard power source
+- **3D printed frame** — supports motors and electronics
 
-### Features
 
-1. Stabilize Mode
-2. Height-hold Mode
-3. Position-hold Mode
-4. APP Control
-5. CFclient Supported
+## 💻 Firmware
 
-Note: to implement Height-hold/Position-hold mode, extension boards are needed. For more information, see Hardware Reference. 
+The firmware is based on the open-source `esp-drone` project from Espressif Systems.
 
-### Third Party Copyrighted Code
+It includes:
 
-Additional third party copyrighted code is included under the following licenses.
+- Real-time flight control loop  
+- Sensor fusion from IMU  
+- PID stabilization control  
+- WiFi command interface  
+- PWM motor signal generation  
+- FreeRTOS-based task scheduling  
 
-| Component | License | Origin |Commit ID |
-| :---:  | :---: | :---: |:---: |
-| core/crazyflie | GPL3.0  |[Crazyflie](https://github.com/bitcraze/crazyflie-firmware) |tag_2021_01 b448553|
-| lib/dsp_lib |  | [esp32-lin](https://github.com/whyengineer/esp32-lin/tree/master/components/dsp_lib) |6fa39f4c|
+## 📱 Control App
 
-### Support Policy
+The most reliable mobile controller I found for this setup was **LiteWing**.
 
-From December 2022, we will offer limited support on this project, but Pull Request is still welcomed!
+- [App Store](https://apps.apple.com/us/app/litewing/id6751232172)
+- [Google Play](https://play.google.com/store/search?q=litewing&c=apps)
 
-### THANKS
+It connects directly to the ESP32 over WiFi and provides stable throttle and attitude control. The feature that made a big difference was **adjustable trim**. This allowed correction of small drift during hover without modifying PID parameters.
 
-1. Thanks to Bitcraze for the great [Crazyflie project](https://www.bitcraze.io/%20).
-2. Thanks to Espressif for the powerful [ESP-IDF framework](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/get-started/index.html).
-3. Thanks to WhyEngineer for the useful [ESP-DSP lib](https://github.com/whyengineer/esp32-lin/tree/master/components/dsp_lib).
+## 🛠 Firmware Setup & Flashing (macOS)
 
+The ESP-FLY tutorial focuses on Windows for flashing. Below are the steps I followed to set up ESP-IDF and flash the firmware on macOS.
+
+### 1️⃣ Install ESP-IDF
+
+Install **ESP-IDF v5.0.7** following Espressif’s official [macOS setup instructions](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/linux-macos-setup.html).
+
+After installation, your ESP-IDF directory path should something look like:
+
+```
+~/esp/esp-idf-v5.0.7
+```
+
+### 2️⃣ Activate ESP-IDF Environment
+
+```bash
+# Navigate to ESP-IDF directory
+cd ~/esp/esp-idf-v5.0.7
+
+# Load environment variables
+source export.sh
+```
+
+
+### 3️⃣ Clone this Repository
+
+```bash
+git clone https://github.com/themaxboucher/esp-drone.git
+cd esp-drone
+```
+
+
+### 4️⃣ Build the Firmware
+
+```bash
+idf.py build
+```
+
+
+### 5️⃣ Flash the Firmware
+
+```bash
+idf.py -p <PORT> flash monitor
+```
+
+Replace `<PORT>` with the serial device associated with the ESP32 USB connection.
+
+To list available ports:
+
+```bash
+ls /dev/cu.*
+```
+
+Flashing uploads the compiled firmware to the ESP32 and opens a serial monitor for debugging output.
+
+
+## 🙏 Attribution
+
+This project is based on the original **ESP-Fly** platform and firmware ecosystem.
+
+### Original Project & Tutorial
+- 🎥 YouTube Tutorial (Max Imagination):  
+  https://www.youtube.com/watch?v=V_mZsiZcy7s
+
+- 📖 Elektor Article: *ESP-FLY – The Smallest ESP32 Drone You Can Build*  
+  https://www.elektormagazine.com/labs/esp-fly-the-smallest-esp32-drone-you-can-build
+
+### Firmware Base
+- 🧠 `esp-drone` open-source firmware by Espressif Systems:  
+  https://github.com/espressif/esp-drone
+
+### Flight Control Ecosystem
+- 🚁 Crazyflie open-source drone platform (control architecture reference):  
+  https://www.bitcraze.io/crazyflie/
+
+---
+
+This repository documents the hardware assembly, firmware configuration (macOS ESP-IDF environment), system tuning, and validation work built on top of these open-source resources.
+
+## 📜 License
+
+This project inherits the GPL-3.0 license from the original `esp-drone` firmware.
+
+See the `LICENSE` file for details.
